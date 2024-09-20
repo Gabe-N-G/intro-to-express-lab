@@ -29,8 +29,15 @@ app.get("/greetings/:username", (req,res)=>{
 
 // Task: Set up a route to handle URLs following the pattern /roll/<number-parameter>.
 
+//Validation: If the parameter is not a number, respond with “You must specify a number.” For instance, /roll/potato should trigger this response.
+
 app.get("/roll/:number",(req,res)=>{
-    res.send(`you rolled a ${Math.floor(Math.random()*req.params.number)}`)
+    console.log(typeof(req.params.number))
+    if(isNaN(req.params.number)){
+        res.send(`You must specify a number`)
+    }else{
+        res.send(`You rolled a ${Math.floor(Math.random()*req.params.number)}`)
+    }
 })
 
 // Task: Create a route for URLs like /collectibles/<index-parameter>.
@@ -58,18 +65,22 @@ type: Shows only shoes of the specified type.
 No parameters: Responds with the full list of shoes.
 */
 
-// app.get("/shoes/", (req,res) => {
-//     const min = req.query.min-price
-//     const max = req.query.max-price
-//     const type = req.query.type
-// })
-
 app.get("/shoes", (req,res) => {
+    const min = req.query.min
+    const max = req.query.max
+    const type = req.query.type
     let results = ""
-
-    shoes.forEach((shoe, i) => {
-        results += `${i + 1}. ${shoe.name} `
-    })
-    res.send(results)
-    // res.end(`${shoes[1].name}`)
+        shoes.forEach((shoe, i) => {
+            results += `${i + 1}. ${shoe.name} `
+        })
+    
+    if(req.query.min){
+        res.send(shoes.filter((shoe) => shoe.price < req.query.min))
+    } else if(req.query.max){
+        res.send(shoes.filter((shoe) => shoe.price > req.query.max))
+    } else if(req.query.type){
+        res.send(shoes.filter((shoe) => shoe.type === req.query.type))
+    } else {
+        res.send(results)
+    }
 })
