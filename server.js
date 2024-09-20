@@ -10,3 +10,9 @@ app.listen(3000, () => {
 app.get("/greetings/:username", (req,res)=>{
     res.send(`<h1>Just what do you think you're doing ${req.params.username}?</h1>`)
 })
+
+// Task: Set up a route to handle URLs following the pattern /roll/<number-parameter>.
+
+app.get("/roll/:number",(req,res)=>{
+    res.end(`you rolled a ${Math.floor(Math.random()*req.params.number)}`)
+})
